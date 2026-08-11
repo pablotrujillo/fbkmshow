@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cross-toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            gcc-aarch64-linux-gnu \
+            libc6-dev-arm64-cross \
+            gcc-arm-linux-gnueabihf \
+            libc6-dev-armhf-cross
+
+      - name: Strict warnings check (host arch)
+        run: gcc -O2 -Wall -Wextra -Werror -c fbkmshow.c -o /dev/null
+
+      - name: Build all architectures
+        run: make all-arch
+
+      - name: Verify binaries
+        run: |
+          file fbkmshow-aarch64
+          file fbkmshow-armv7
+          file fbkmshow-x86_64
