@@ -14,6 +14,9 @@
  * uses to push raw pixels to /dev/fb0.
  *
  * Usage: fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] <image-file>
+ *
+ * Author: Pablo Trujillo <https://github.com/pablotrujillo>
+ * License: MIT (see LICENSE)
  */
 
 #define STB_IMAGE_IMPLEMENTATION

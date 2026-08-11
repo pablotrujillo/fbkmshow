@@ -1,5 +1,9 @@
 # Makefile — fbkmshow: minimal multiarch Linux framebuffer image viewer.
 #
+# Layout:
+#   src/            — this project's own source
+#   third_party/    — vendored dependencies (stb_image.h)
+#
 # Targets:
 #   make            — build natively for the host (dynamic linking)
 #   make aarch64    — cross-compile a static aarch64 binary  (fbkmshow-aarch64)
@@ -11,20 +15,23 @@
 #   make clean      — remove all built binaries
 #
 # Cross-toolchain packages (Debian/Ubuntu):
-#   sudo apt-get install gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf gcc
+#   sudo apt-get install gcc-aarch64-linux-gnu libc6-dev-arm64-cross \
+#                        gcc-arm-linux-gnueabihf libc6-dev-armhf-cross gcc
 
-CC     ?= cc
-STRIP  ?= strip
-CFLAGS ?= -O2 -Wall -Wextra
-LDLIBS := -lm
-TARGET ?= fbkmshow
+CC       ?= cc
+STRIP    ?= strip
+CFLAGS   ?= -O2 -Wall -Wextra
+CPPFLAGS := -Ithird_party
+LDLIBS   := -lm
+TARGET   ?= fbkmshow
+SRC      := src/fbkmshow.c
 
 .PHONY: all aarch64 armv7 x86_64 all-arch build-one docker clean
 
 all: $(TARGET)
 
-$(TARGET): fbkmshow.c stb_image.h
-	$(CC) $(CFLAGS) -o $(TARGET) fbkmshow.c $(LDLIBS)
+$(TARGET): $(SRC) third_party/stb_image.h
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $(TARGET) $(SRC) $(LDLIBS)
 
 aarch64:
 	$(MAKE) build-one TARGET=fbkmshow-aarch64 CC=aarch64-linux-gnu-gcc STRIP=aarch64-linux-gnu-strip CFLAGS="-O2 -Wall -Wextra -static"

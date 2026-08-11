@@ -110,6 +110,13 @@ fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] <image-file>
 
 Only 32bpp framebuffers are currently supported.
 
+## Project layout
+
+```
+src/           this project's source (fbkmshow.c)
+third_party/   vendored dependencies (stb_image.h)
+```
+
 ## Contributing
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).

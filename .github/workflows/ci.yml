@@ -20,7 +20,7 @@ jobs:
             libc6-dev-armhf-cross
 
       - name: Strict warnings check (host arch)
-        run: gcc -O2 -Wall -Wextra -Werror -c fbkmshow.c -o /dev/null
+        run: gcc -Ithird_party -O2 -Wall -Wextra -Werror -c src/fbkmshow.c -o /dev/null
 
       - name: Build all architectures
         run: make all-arch
