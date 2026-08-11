@@ -34,7 +34,7 @@ jobs:
             debarch="${DEBARCH[$arch]}"
             pkgdir="pkg-$arch"
             mkdir -p "$pkgdir/DEBIAN" "$pkgdir/usr/bin"
-            install -m 755 "fbkmshow-$arch" "$pkgdir/usr/bin/fbkmshow"
+            install -m 755 "build/fbkmshow-$arch" "$pkgdir/usr/bin/fbkmshow"
             cat > "$pkgdir/DEBIAN/control" <<EOF
           Package: fbkmshow
           Version: $VERSION
@@ -55,8 +55,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            fbkmshow-aarch64
-            fbkmshow-armv7
-            fbkmshow-x86_64
+            build/fbkmshow-aarch64
+            build/fbkmshow-armv7
+            build/fbkmshow-x86_64
             fbkmshow_*.deb
           generate_release_notes: true

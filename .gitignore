@@ -1,5 +1,2 @@
-fbkmshow
-fbkmshow-aarch64
-fbkmshow-armv7
-fbkmshow-x86_64
+/build/
 *.o
