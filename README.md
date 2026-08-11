@@ -38,6 +38,19 @@ work everywhere a framebuffer device exists at all.
   are also published on the [Releases](https://github.com/pablotrujillo/fbkmshow/releases)
   page for `aarch64`, `armv7` (armhf), and `x86_64` — just download and run
 
+## Installing on Debian/Ubuntu
+
+Each [Release](https://github.com/pablotrujillo/fbkmshow/releases) also
+includes a `.deb` package per architecture:
+
+```sh
+# arm64, armhf, or amd64 — pick the one matching your system
+sudo apt install ./fbkmshow_<version>_arm64.deb
+```
+
+This installs `fbkmshow` to `/usr/bin/fbkmshow`. Uninstall with
+`sudo apt remove fbkmshow`.
+
 ## Building
 
 ### Native (host architecture)

@@ -22,3 +22,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   Docker-based build using the public `ubuntu:24.04` image.
 - GitHub Actions CI (build check) and release workflow (publishes prebuilt
   binaries for all three architectures on tagged releases).
+- `.deb` packages (`arm64`, `armhf`, `amd64`) published alongside the raw
+  binaries on each release.

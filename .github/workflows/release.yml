@@ -26,6 +26,31 @@ jobs:
       - name: Build all architectures
         run: make all-arch
 
+      - name: Build .deb packages
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          declare -A DEBARCH=( [aarch64]=arm64 [armv7]=armhf [x86_64]=amd64 )
+          for arch in aarch64 armv7 x86_64; do
+            debarch="${DEBARCH[$arch]}"
+            pkgdir="pkg-$arch"
+            mkdir -p "$pkgdir/DEBIAN" "$pkgdir/usr/bin"
+            install -m 755 "fbkmshow-$arch" "$pkgdir/usr/bin/fbkmshow"
+            cat > "$pkgdir/DEBIAN/control" <<EOF
+          Package: fbkmshow
+          Version: $VERSION
+          Section: utils
+          Priority: optional
+          Architecture: $debarch
+          Maintainer: Pablo Trujillo <pablotrujillo@users.noreply.github.com>
+          Description: minimal Linux framebuffer image viewer
+           Writes an image directly to a Linux framebuffer device (/dev/fbN).
+           Supports both legacy fbdev drivers and the fbdev-emulation layer
+           exposed by modern DRM/KMS drivers. No X11, Wayland, or compositor
+           required.
+          EOF
+            dpkg-deb --build --root-owner-group "$pkgdir" "fbkmshow_${VERSION}_${debarch}.deb"
+          done
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -33,4 +58,5 @@ jobs:
             fbkmshow-aarch64
             fbkmshow-armv7
             fbkmshow-x86_64
+            fbkmshow_*.deb
           generate_release_notes: true
