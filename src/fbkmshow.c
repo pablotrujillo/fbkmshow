@@ -18,6 +18,12 @@
  * own delay from the file. Every other format (and single-frame GIFs) still
  * goes through the plain single-image path, unchanged.
  *
+ * A long-running `--loops=0` (forever) animation is meant to be stopped with
+ * SIGTERM from another process once whatever it was waiting on is ready.
+ * SIGTERM is caught and only checked between frames (never mid-render), so
+ * the loop always exits on a complete, cleanly-written frame rather than
+ * whatever the OS's default abrupt termination would leave behind.
+ *
  * Usage: fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>
  *
  * Author: Pablo Trujillo <https://github.com/pablotrujillo>
@@ -29,11 +35,15 @@
 
 #include <fcntl.h>
 #include <linux/fb.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+
+static volatile sig_atomic_t g_stop = 0;
+static void handle_stop(int sig) { (void)sig; g_stop = 1; }
 
 static void die(const char *msg) {
     fprintf(stderr, "fbkmshow: %s\n", msg);
@@ -135,6 +145,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    signal(SIGTERM, handle_stop);
+
     int fbfd = open(fb_path, O_RDWR);
     if (fbfd < 0) die("cannot open framebuffer device");
 
@@ -189,7 +201,7 @@ int main(int argc, char **argv) {
     size_t frame_stride = (size_t)img_w * img_h * 4;
     int pass = 0;
     do {
-        for (int i = 0; i < frame_count; i++) {
+        for (int i = 0; i < frame_count && !g_stop; i++) {
             render_frame(frames + (size_t)i * frame_stride, img_w, img_h,
                          canvas, fbmem, fbfd, fb_w, fb_h, fb_stride, fb_size, rotate);
             if (frame_count > 1) {
@@ -199,7 +211,7 @@ int main(int argc, char **argv) {
             }
         }
         pass++;
-    } while (frame_count > 1 && (loops == 0 || pass < loops));
+    } while (!g_stop && frame_count > 1 && (loops == 0 || pass < loops));
 
     free(fbmem);
     free(canvas);

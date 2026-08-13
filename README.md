@@ -117,6 +117,12 @@ fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-
 
 # Play an animated GIF forever (e.g. a boot/loading screen)
 ./fbkmshow --loops=0 loading.gif
+
+# Stop a --loops=0 animation cleanly from another process/script once
+# whatever it was waiting on (network, another step) is ready:
+#   fbkmshow --loops=0 loading.gif & PID=$!
+#   ...do other work...
+#   kill "$PID"; wait "$PID"
 ```
 
 ## How it works
@@ -134,7 +140,9 @@ fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-
    at its rotated destination coordinates.
 5. Writes the resulting buffer to the device with a single `write()` call.
    For animated GIFs, sleeps for that frame's delay, then repeats for the
-   next frame — looping `--loops` times (or forever if `0`).
+   next frame — looping `--loops` times (or forever if `0`). `SIGTERM` is
+   checked between frames (never mid-render), so a `--loops=0` animation
+   stopped externally always exits on a complete, cleanly-written frame.
 
 Only 32bpp framebuffers are currently supported.
 

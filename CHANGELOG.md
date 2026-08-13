@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   `stb_image`'s `stbi_load_gif_from_memory`, honoring each frame's own delay.
 - `--loops=N` flag to control how many times an animated GIF plays (`0` =
   forever). Ignored for single-frame images, which behave exactly as before.
+- `SIGTERM` now stops a running animation cleanly at the next frame boundary
+  instead of relying on the OS's default abrupt termination — useful for a
+  `--loops=0` animation meant to run until another process signals it to
+  stop.
 
 ## [1.0.0] - 2026-08-11
 
