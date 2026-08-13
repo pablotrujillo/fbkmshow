@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - `--version` flag, backed by a `FBKMSHOW_VERSION` constant in the source —
   the binary's version no longer depends solely on the git tag it happened
   to be built from.
+- Git checkouts now override `FBKMSHOW_VERSION` at build time with
+  `git describe --tags --always --dirty`, so a non-exact-tag build (extra
+  commits, `-dirty`) is visible at a glance in `--version` output; tarball
+  builds with no `.git` fall back to the hardcoded constant.
 
 ## [1.0.0] - 2026-08-11
 
