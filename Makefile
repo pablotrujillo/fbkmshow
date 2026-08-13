@@ -27,11 +27,21 @@ BUILDDIR ?= build
 CC       ?= cc
 STRIP    ?= strip
 CFLAGS   ?= -O2 -Wall -Wextra
-CPPFLAGS := -Ithird_party
 LDLIBS   := -lm
 TARGET   ?= fbkmshow
 SRC      := src/fbkmshow.c
 BIN      := $(BUILDDIR)/$(TARGET)
+
+# Build-time version override: when built from a git checkout, embed
+# `git describe` (e.g. "v1.0.0-3-gc199d94", or "-dirty" appended for
+# uncommitted changes) so the binary can tell you it's NOT an exact tagged
+# release — falls back to the source's own FBKMSHOW_VERSION constant when
+# building from a tarball with no .git (describe unavailable).
+GIT_VERSION := $(shell git describe --tags --always --dirty 2>/dev/null)
+CPPFLAGS := -Ithird_party
+ifneq ($(GIT_VERSION),)
+CPPFLAGS += -DFBKMSHOW_GIT_VERSION=\"$(GIT_VERSION)\"
+endif
 
 .PHONY: all aarch64 armv7 x86_64 all-arch build-one docker clean
 
