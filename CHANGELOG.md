@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Scale-to-fit now uses bilinear interpolation instead of nearest-neighbor
+  sampling, so downscaled images (especially text/fine detail) render
+  noticeably smoother.
+
 ## [1.1.0] - 2026-08-13
 
 ### Added
