@@ -31,10 +31,16 @@
  */
 
 /* Bump on every user-visible change, per Semantic Versioning — keep in sync
- * with CHANGELOG.md. This is the single source of truth for the binary's own
- * version; release tags/.deb packages should derive from this, not the
- * other way around. */
+ * with CHANGELOG.md. Source-level fallback for tarball builds with no .git
+ * available. A git checkout overrides this at build time (see Makefile)
+ * with `git describe --tags --always --dirty`, e.g. "v1.0.0-3-gc199d94" or
+ * "...-dirty" — anything other than an exact tag name signals a non-release
+ * build, so you can tell at a glance a binary isn't from a tagged release. */
+#ifndef FBKMSHOW_GIT_VERSION
 #define FBKMSHOW_VERSION "1.1.0"
+#else
+#define FBKMSHOW_VERSION FBKMSHOW_GIT_VERSION
+#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
