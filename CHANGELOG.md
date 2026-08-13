@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-13
+
+### Added
+
+- Animated GIF playback: multi-frame GIFs now play back frame-by-frame via
+  `stb_image`'s `stbi_load_gif_from_memory`, honoring each frame's own delay.
+- `--loops=N` flag to control how many times an animated GIF plays (`0` =
+  forever). Ignored for single-frame images, which behave exactly as before.
+- `SIGTERM` now stops a running animation cleanly at the next frame boundary
+  instead of relying on the OS's default abrupt termination — useful for a
+  `--loops=0` animation meant to run until another process signals it to
+  stop.
+- `--version` flag, backed by a `FBKMSHOW_VERSION` constant in the source —
+  the binary's version no longer depends solely on the git tag it happened
+  to be built from.
+- Git checkouts now override `FBKMSHOW_VERSION` at build time with
+  `git describe --tags --always --dirty`, so a non-exact-tag build (extra
+  commits, `-dirty`) is visible at a glance in `--version` output; tarball
+  builds with no `.git` fall back to the hardcoded constant.
+
 ## [1.0.0] - 2026-08-11
 
 ### Added
