@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Animated GIF playback: multi-frame GIFs now play back frame-by-frame via
+  `stb_image`'s `stbi_load_gif_from_memory`, honoring each frame's own delay.
+- `--loops=N` flag to control how many times an animated GIF plays (`0` =
+  forever). Ignored for single-frame images, which behave exactly as before.
+
 ## [1.0.0] - 2026-08-11
 
 ### Added
