@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-08-13
+
 ### Fixed
 
 - Scale-to-fit now uses bilinear interpolation instead of nearest-neighbor
