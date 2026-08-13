@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-13
+
 ### Added
 
 - Animated GIF playback: multi-frame GIFs now play back frame-by-frame via
@@ -17,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   instead of relying on the OS's default abrupt termination — useful for a
   `--loops=0` animation meant to run until another process signals it to
   stop.
+- `--version` flag, backed by a `FBKMSHOW_VERSION` constant in the source —
+  the binary's version no longer depends solely on the git tag it happened
+  to be built from.
 
 ## [1.0.0] - 2026-08-11
 

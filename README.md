@@ -90,7 +90,7 @@ architectures inside it.
 ## Usage
 
 ```
-fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>
+fbkmshow [-h|--help] [--version] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>
 ```
 
 | Flag              | Description                                      | Default     |
@@ -99,6 +99,7 @@ fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-
 | `--fb=PATH`       | Path to the framebuffer device                     | `/dev/fb0`  |
 | `--loops=N`       | Animated GIFs only: play the animation `N` times (`0` = forever) | `1` |
 | `-h`, `--help`    | Print usage and exit                               | —           |
+| `--version`       | Print the version number and exit                  | —           |
 
 ### Examples
 

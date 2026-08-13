@@ -24,11 +24,17 @@
  * the loop always exits on a complete, cleanly-written frame rather than
  * whatever the OS's default abrupt termination would leave behind.
  *
- * Usage: fbkmshow [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>
+ * Usage: fbkmshow [-h|--help] [--version] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>
  *
  * Author: Pablo Trujillo <https://github.com/pablotrujillo>
  * License: MIT (see LICENSE)
  */
+
+/* Bump on every user-visible change, per Semantic Versioning — keep in sync
+ * with CHANGELOG.md. This is the single source of truth for the binary's own
+ * version; release tags/.deb packages should derive from this, not the
+ * other way around. */
+#define FBKMSHOW_VERSION "1.1.0"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -51,8 +57,9 @@ static void die(const char *msg) {
 }
 
 static void usage(const char *prog, FILE *out) {
-    fprintf(out, "Usage: %s [-h|--help] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>\n", prog);
+    fprintf(out, "Usage: %s [-h|--help] [--version] [--rotate=0|90|180|270] [--fb=/dev/fb0] [--loops=N] <image-file>\n", prog);
     fprintf(out, "  --loops=N   animated GIFs only: play the animation N times (default 1, 0 = forever)\n");
+    fprintf(out, "  --version   print the version number and exit\n");
 }
 
 /* Scales+centers one RGBA frame onto the framebuffer's logical canvas,
@@ -129,6 +136,9 @@ int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
             usage(argv[0], stdout);
+            return 0;
+        } else if (strcmp(argv[i], "--version") == 0) {
+            printf("fbkmshow %s\n", FBKMSHOW_VERSION);
             return 0;
         } else if (strncmp(argv[i], "--rotate=", 9) == 0) {
             rotate = atoi(argv[i] + 9);
