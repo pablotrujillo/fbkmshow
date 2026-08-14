@@ -37,7 +37,7 @@
  * "...-dirty" — anything other than an exact tag name signals a non-release
  * build, so you can tell at a glance a binary isn't from a tagged release. */
 #ifndef FBKMSHOW_GIT_VERSION
-#define FBKMSHOW_VERSION "1.1.0"
+#define FBKMSHOW_VERSION "1.1.1"
 #else
 #define FBKMSHOW_VERSION FBKMSHOW_GIT_VERSION
 #endif
