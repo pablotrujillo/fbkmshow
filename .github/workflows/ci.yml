@@ -27,6 +27,6 @@ jobs:
 
       - name: Verify binaries
         run: |
-          file fbkmshow-aarch64
-          file fbkmshow-armv7
-          file fbkmshow-x86_64
+          file build/fbkmshow-aarch64
+          file build/fbkmshow-armv7
+          file build/fbkmshow-x86_64
