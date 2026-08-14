@@ -37,7 +37,7 @@
  * "...-dirty" — anything other than an exact tag name signals a non-release
  * build, so you can tell at a glance a binary isn't from a tagged release. */
 #ifndef FBKMSHOW_GIT_VERSION
-#define FBKMSHOW_VERSION "1.1.0"
+#define FBKMSHOW_VERSION "1.1.1"
 #else
 #define FBKMSHOW_VERSION FBKMSHOW_GIT_VERSION
 #endif
@@ -68,6 +68,32 @@ static void usage(const char *prog, FILE *out) {
     fprintf(out, "  --version   print the version number and exit\n");
 }
 
+/* Bilinear-samples img at floating-point (sx, sy), clamping at the edges,
+ * and writes the interpolated RGBA into out[0..3]. */
+static void sample_bilinear(const unsigned char *img, int img_w, int img_h,
+                             double sx, double sy, unsigned char *out) {
+    if (sx < 0) sx = 0;
+    if (sy < 0) sy = 0;
+    if (sx > img_w - 1) sx = img_w - 1;
+    if (sy > img_h - 1) sy = img_h - 1;
+
+    int x0 = (int)sx, y0 = (int)sy;
+    int x1 = x0 + 1 < img_w ? x0 + 1 : x0;
+    int y1 = y0 + 1 < img_h ? y0 + 1 : y0;
+    double fx = sx - x0, fy = sy - y0;
+
+    const unsigned char *p00 = &img[(y0 * img_w + x0) * 4];
+    const unsigned char *p10 = &img[(y0 * img_w + x1) * 4];
+    const unsigned char *p01 = &img[(y1 * img_w + x0) * 4];
+    const unsigned char *p11 = &img[(y1 * img_w + x1) * 4];
+
+    for (int c = 0; c < 4; c++) {
+        double top = p00[c] * (1 - fx) + p10[c] * fx;
+        double bot = p01[c] * (1 - fx) + p11[c] * fx;
+        out[c] = (unsigned char)(top * (1 - fy) + bot * fy + 0.5);
+    }
+}
+
 /* Scales+centers one RGBA frame onto the framebuffer's logical canvas,
  * converts to the framebuffer's native BGRX8888 layout while placing each
  * pixel at its rotated destination, and writes the result with one write().
@@ -92,16 +118,15 @@ static void render_frame(unsigned char *img, int img_w, int img_h,
     memset(canvas, 0, (size_t)lw * lh * 4); /* RGBA, black bg */
 
     for (int y = 0; y < dst_h; y++) {
-        int sy = (int)(y / scale);
-        if (sy >= img_h) sy = img_h - 1;
+        double sy = y / scale;
         for (int x = 0; x < dst_w; x++) {
-            int sx = (int)(x / scale);
-            if (sx >= img_w) sx = img_w - 1;
-            unsigned char *src = &img[(sy * img_w + sx) * 4];
+            double sx = x / scale;
+            unsigned char sample[4];
+            sample_bilinear(img, img_w, img_h, sx, sy, sample);
             int dx = off_x + x, dy = off_y + y;
             if (dx < 0 || dx >= lw || dy < 0 || dy >= lh) continue;
             unsigned char *dst = &canvas[(dy * lw + dx) * 4];
-            dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
+            dst[0] = sample[0]; dst[1] = sample[1]; dst[2] = sample[2]; dst[3] = sample[3];
         }
     }
 
